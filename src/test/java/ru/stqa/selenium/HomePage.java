@@ -17,11 +17,11 @@ public class HomePage extends TestBase {
 
     @Test
     public void checkForStickersTest() {
-        List<WebElement> list = driver.findElements(By.cssSelector("div#main [class=link]"));
+        List<WebElement> list = driver.findElements(By.cssSelector("div#main li.hover-light"));
 
         for (int i = 0; i < list.size(); i++) {
             WebElement element = list.get(i);
-            Assert.assertTrue(element.findElements(By.cssSelector("[class^=sticker]")).size() == 1);
+            Assert.assertTrue(element.findElements(By.cssSelector("div.sticker")).size() == 1);
         }
     }
 }
