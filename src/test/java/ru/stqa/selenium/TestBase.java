@@ -4,12 +4,14 @@ import org.junit.After;
 import org.junit.Before;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.ie.InternetExplorerOptions;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import org.openqa.selenium.support.Color;
@@ -39,23 +41,19 @@ public class TestBase {
         return size1 < size2;
     }
 
-    boolean color (Color color) {
+    boolean color(Color color) {
         int red = color.getColor().getRed();
         int green = color.getColor().getGreen();
         int blue = color.getColor().getBlue();
 
         if ((red == green) && (green == blue)) {
             return true;
-        }
-        else if ((red != green) && (green == blue)) {
+        } else if ((red != green) && (green == blue)) {
             return true;
-        }
-        else {
+        } else {
             return false;
         }
     }
-
-
 
     @Before
     public void start() throws IOException {
@@ -70,21 +68,21 @@ public class TestBase {
             options.addArguments("start-fullscreen");
             driver = new ChromeDriver(options);
             wait = new WebDriverWait(driver, 10);
-        }
-        else if ("firefox".equals(prop.getProperty("browser"))) {
+        } else if ("firefox".equals(prop.getProperty("browser"))) {
             FirefoxOptions options = new FirefoxOptions();
             options.addArguments("start-fullscreen");
             driver = new FirefoxDriver(options);
             wait = new WebDriverWait(driver, 10);
-        }
-        else if ("ie".equals(prop.getProperty("browser"))) {
+        } else if ("ie".equals(prop.getProperty("browser"))) {
             InternetExplorerOptions options = new InternetExplorerOptions();
             options.addCommandSwitches("start-fullscreen");
             driver = new InternetExplorerDriver(options);
             wait = new WebDriverWait(driver, 10);
         }
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {driver.quit(); driver = null;}));
-
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            driver.quit();
+            driver = null;
+        }));
     }
 
     @After

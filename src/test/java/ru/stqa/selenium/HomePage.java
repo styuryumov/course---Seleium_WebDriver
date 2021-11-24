@@ -6,9 +6,10 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.Color;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.support.ui.Select;
 
 
-import java.awt.*;
 import java.util.List;
 
 public class HomePage extends TestBase {
@@ -71,6 +72,37 @@ public class HomePage extends TestBase {
         Assert.assertEquals(campaignPriceHomePage, campaignPriceProductPage);
         Assert.assertEquals(strikeRegularPriceHomePage, strikeRegularPriceProductPage);
         Assert.assertEquals(strongCampaignPriceHomePage, strongCampaignPriceProductPage);
+    }
 
+    @Test
+    public void registrationLoginNewUser() throws InterruptedException {
+        driver.findElement(By.cssSelector("div#box-account-login a")).click();
+        Assert.assertEquals("Create Account", driver.findElement(By.cssSelector("div#create-account h1")).getAttribute("textContent"));
+        // Registration new user
+        driver.findElement(By.cssSelector("div.content [name=firstname]")).sendKeys("Sergey");
+        driver.findElement(By.cssSelector("div.content [name=lastname]")).sendKeys("Pshenichnikov-Ivanov");
+        driver.findElement(By.cssSelector("div.content [name=address1]")).sendKeys("Mountain View Driver 0514");
+        driver.findElement(By.cssSelector("div.content [name=postcode]")).sendKeys("85505");
+        driver.findElement(By.cssSelector("div.content [name=city]")).sendKeys("Mesa");
+        Select selectCountries = new Select(driver.findElement(By.cssSelector("div#create-account [name=country_code]")));
+        selectCountries.selectByValue("US");
+        Thread.sleep(1000);
+        Select selectZones = new Select(driver.findElement(By.cssSelector("div#create-account select[name=zone_code]")));
+        selectZones.selectByValue("AZ");
+        driver.findElement(By.cssSelector("div.content [name=email]")).sendKeys("scalex.{stqa-java}@test.com");
+        driver.findElement(By.cssSelector("div.content [name=phone]")).sendKeys("+19287475617");
+        driver.findElement(By.cssSelector("div.content [name=password]")).sendKeys("Eqlbcljhjub09");
+        driver.findElement(By.cssSelector("div.content [name=confirmed_password]")).sendKeys("Eqlbcljhjub09");
+        driver.findElement(By.cssSelector("div.content [name=create_account]")).click();
+        List<WebElement> listOutRegistration = driver.findElements(By.cssSelector("div#box-account ul.list-vertical li"));
+        listOutRegistration.get(3).findElement(By.cssSelector("a")).click();
+        // Login new user
+        driver.findElement(By.cssSelector("div#box-account-login [name=email]")).click();
+        driver.findElement(By.cssSelector("div#box-account-login [name=email]")).sendKeys("scalex.{stqa-java}@test.com");
+        driver.findElement(By.cssSelector("div#box-account-login [name=password]")).click();
+        driver.findElement(By.cssSelector("div#box-account-login [name=password]")).sendKeys("Eqlbcljhjub09" + Keys.ENTER);
+        List<WebElement> listOutLogin = driver.findElements(By.cssSelector("div#box-account ul.list-vertical li"));
+        listOutLogin.get(3).findElement(By.cssSelector("a")).click();
     }
 }
+
