@@ -8,6 +8,9 @@ import org.openqa.selenium.WebElement;
 
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 
+import java.io.File;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Collections;
@@ -68,8 +71,6 @@ public class AdminTest extends TestBase {
         List<WebElement> allRowsCountriesZones = tableCountriesZones.findElements(By.cssSelector("tr"));
         int iterations = allRowsCountriesZones.size();
         for (int i = 1; i < iterations - 1; i++) {
-            tableCountriesZones = driver.findElement(By.cssSelector("table.dataTable"));
-            allRowsCountriesZones = tableCountriesZones.findElements(By.cssSelector("tr"));
             List<WebElement> cellsZones = allRowsCountriesZones.get(i).findElements(By.cssSelector("td"));
             int zone = Integer.parseInt(cellsZones.get(5).getAttribute("textContent"));
             if (zone > 0) {
@@ -84,6 +85,8 @@ public class AdminTest extends TestBase {
                 sortCountriesZones.addAll(countryZones);
                 Assert.assertEquals(sortCountriesZones, countryZones);
                 driver.navigate().back();
+                tableCountriesZones = driver.findElement(By.cssSelector("table.dataTable"));
+                allRowsCountriesZones = tableCountriesZones.findElements(By.cssSelector("tr"));
             }
         }
     }
@@ -118,3 +121,4 @@ public class AdminTest extends TestBase {
         }
     }
 }
+
