@@ -4,13 +4,18 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.Select;
 
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 
+import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.io.File;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Collections;
@@ -119,6 +124,66 @@ public class AdminTest extends TestBase {
             Assert.assertEquals(sortZones, zones);
             driver.navigate().back();
         }
+    }
+
+    @Test
+    public void creationNewProduct() throws InterruptedException {
+        List<WebElement> list = driver.findElements(By.cssSelector("li#app-"));
+        list.get(1).click();
+        Assert.assertEquals(" Catalog", driver.findElement(By.cssSelector("td#content h1")).getAttribute("outerText"));
+        List<WebElement> addNew = driver.findElements(By.cssSelector("td#content a.button"));
+        addNew.get(1).click();
+        List<WebElement> tabs = driver.findElements(By.cssSelector("div.tabs li a"));
+        // Filling out the sheet general
+        List<WebElement> listGeneral = driver.findElements(By.cssSelector("div#tab-general [name]"));
+        listGeneral.get(0).click();
+        listGeneral.get(2).sendKeys("Bat-Duck");
+        driver.findElement(By.cssSelector("div#tab-general [name=code]")).sendKeys("rd006");
+        checkbox(driver, By.cssSelector("div.input-wrapper [name*=categories]"), 1);
+        checkbox(driver, By.cssSelector("div.input-wrapper [name*=product_groups]"), 2);
+        driver.findElement(By.cssSelector("div#tab-general [name=quantity]")).clear();
+        driver.findElement(By.cssSelector("div#tab-general [name=quantity]")).sendKeys("30");
+        Select selectSoldOutStatus = new Select(driver.findElement(By.cssSelector("div#tab-general [name=sold_out_status_id]")));
+        selectSoldOutStatus.selectByValue("2");
+        File file = new File("src\\test\\resources\\Duck.jpg");
+        driver.findElement(By.cssSelector("div#tab-general [type=file]")).sendKeys(file.getAbsolutePath());
+        driver.findElement(By.cssSelector("div#tab-general [name=date_valid_from]")).click();
+        driver.findElement(By.cssSelector("div#tab-general [name=date_valid_from]")).sendKeys("26.11.2021");
+        driver.findElement(By.cssSelector("div#tab-general [name=date_valid_to]")).click();
+        driver.findElement(By.cssSelector("div#tab-general [name=date_valid_to]")).sendKeys("26.01.2022");
+        // switch to tab Information
+        tabs.get(1).click();
+        Thread.sleep(1500);
+        Select selectManufacturer = new Select(driver.findElement(By.cssSelector("div#tab-information [name=manufacturer_id]")));
+        selectManufacturer.selectByValue("1");
+        String shotDescription = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse sollicitudin ante massa, eget ornare libero porta congue.";
+        StringSelection shotDescriptionSelection = new StringSelection(shotDescription);
+        Clipboard clipboardShotDescription = Toolkit.getDefaultToolkit().getSystemClipboard();
+        clipboardShotDescription.setContents(shotDescriptionSelection, null);
+        driver.findElement(By.cssSelector("div#tab-information [name*=short_description]")).sendKeys(Keys.CONTROL + "v");
+        String description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse sollicitudin ante massa, eget ornare libero porta congue. Cras scelerisque dui non " +
+                "consequat sollicitudin. Sed pretium tortor ac auctor molestie. Nulla facilisi. Maecenas pulvinar nibh vitae lectus vehicula semper. Donec et aliquet velit. Curabitur non ullamcorper mauris. In hac habitasse platea dictumst. Phasellus " +
+                "ut pretium justo, sit amet bibendum urna. Maecenas sit amet arcu pulvinar, facilisis quam at, viverra nisi. Morbi sit amet adipiscing ante. Integer imperdiet volutpat ante, sed venenatis urna volutpat a. Proin justo massa, convallis " +
+                "vitae consectetur sit amet, facilisis id libero.";
+        StringSelection descriptionSelection = new StringSelection(description);
+        Clipboard clipboardDescription = Toolkit.getDefaultToolkit().getSystemClipboard();
+        clipboardDescription.setContents(descriptionSelection, null);
+        driver.findElement(By.cssSelector("div.trumbowyg-editor")).sendKeys(Keys.CONTROL + "v");
+        //// switch to tab Prices
+        tabs.get(3).click();
+        Thread.sleep(1500);
+        driver.findElement(By.cssSelector("div#tab-prices [name=purchase_price]")).clear();
+        driver.findElement(By.cssSelector("div#tab-prices [name=purchase_price]")).sendKeys("10");
+        List<WebElement> listCurrencySheet = driver.findElements(By.cssSelector("div#tab-prices [name*=gross_prices]"));
+        listCurrencySheet.get(0).clear();
+        listCurrencySheet.get(0).sendKeys("25,00");
+        driver.findElement(By.cssSelector("span.button-set [name=save]")).click();
+        // verification of successful product addition
+        Thread.sleep(1500);
+        driver.findElement(By.cssSelector("td#content [name=query]")).sendKeys("Bat-Duck" + Keys.ENTER);
+        list.clear();
+        list = driver.findElements(By.cssSelector("table.dataTable a"));
+        Assert.assertEquals(" Bat-Duck", list.get(0).getAttribute("textContent"));
     }
 }
 

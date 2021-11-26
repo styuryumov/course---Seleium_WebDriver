@@ -89,7 +89,9 @@ public class HomePage extends TestBase {
         Thread.sleep(1000);
         Select selectZones = new Select(driver.findElement(By.cssSelector("div#create-account select[name=zone_code]")));
         selectZones.selectByValue("AZ");
-        driver.findElement(By.cssSelector("div.content [name=email]")).sendKeys("scalex.{stqa-java}@test.com");
+        driver.findElement(By.cssSelector("div.content [name=email]")).sendKeys("scalex-" +  rdm.nextInt(10000) + "@test.com");
+        driver.findElement(By.cssSelector("div.content [name=email]")).sendKeys(Keys.CONTROL + "a");
+        driver.findElement(By.cssSelector("div.content [name=email]")).sendKeys(Keys.CONTROL + "c");
         driver.findElement(By.cssSelector("div.content [name=phone]")).sendKeys("+19287475617");
         driver.findElement(By.cssSelector("div.content [name=password]")).sendKeys("Eqlbcljhjub09");
         driver.findElement(By.cssSelector("div.content [name=confirmed_password]")).sendKeys("Eqlbcljhjub09");
@@ -98,7 +100,7 @@ public class HomePage extends TestBase {
         listOutRegistration.get(3).findElement(By.cssSelector("a")).click();
         // Login new user
         driver.findElement(By.cssSelector("div#box-account-login [name=email]")).click();
-        driver.findElement(By.cssSelector("div#box-account-login [name=email]")).sendKeys("scalex.{stqa-java}@test.com");
+        driver.findElement(By.cssSelector("div#box-account-login [name=email]")).sendKeys(Keys.CONTROL + "v");
         driver.findElement(By.cssSelector("div#box-account-login [name=password]")).click();
         driver.findElement(By.cssSelector("div#box-account-login [name=password]")).sendKeys("Eqlbcljhjub09" + Keys.ENTER);
         List<WebElement> listOutLogin = driver.findElements(By.cssSelector("div#box-account ul.list-vertical li"));

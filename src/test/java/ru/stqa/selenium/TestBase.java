@@ -11,22 +11,30 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.ie.InternetExplorerOptions;
-import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import org.openqa.selenium.support.Color;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.Properties;
+import java.util.*;
 
 public class TestBase {
     public static WebDriver driver;
     public Properties prop;
     public static WebDriverWait wait;
+    public Random rdm = new Random();
 
     boolean areElementsPresent(WebDriver driver, By locator) {
         return driver.findElements(locator).size() > 0;
+    }
+
+    public void checkbox(WebDriver driver, By locator, int number) {
+        List<WebElement> list = driver.findElements(locator);
+        for (WebElement chec: list) {
+            if (chec.isSelected() == true) {
+                chec.click();
+            }
+        }
+        list.get(number).click();
     }
 
     public int size(String string) {
