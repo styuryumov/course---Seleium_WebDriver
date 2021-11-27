@@ -130,7 +130,8 @@ public class AdminTest extends TestBase {
     public void creationNewProduct() throws InterruptedException {
         List<WebElement> list = driver.findElements(By.cssSelector("li#app-"));
         list.get(1).click();
-        Assert.assertEquals(" Catalog", driver.findElement(By.cssSelector("td#content h1")).getAttribute("outerText"));
+        Assert.assertEquals("Catalog", driver.findElement(By.cssSelector("td#content h1")).getText());
+        List<WebElement> tableBefore = driver.findElements(By.cssSelector("table.dataTable tr.row"));
         List<WebElement> addNew = driver.findElements(By.cssSelector("td#content a.button"));
         addNew.get(1).click();
         List<WebElement> tabs = driver.findElements(By.cssSelector("div.tabs li a"));
@@ -180,10 +181,8 @@ public class AdminTest extends TestBase {
         driver.findElement(By.cssSelector("span.button-set [name=save]")).click();
         // verification of successful product addition
         Thread.sleep(1500);
-        driver.findElement(By.cssSelector("td#content [name=query]")).sendKeys("Bat-Duck" + Keys.ENTER);
-        list.clear();
-        list = driver.findElements(By.cssSelector("table.dataTable a"));
-        Assert.assertEquals(" Bat-Duck", list.get(0).getAttribute("textContent"));
+        List<WebElement> tableAfter = driver.findElements(By.cssSelector("table.dataTable tr.row"));
+        Assert.assertTrue(tableAfter.size() > tableBefore.size());
     }
 }
 
