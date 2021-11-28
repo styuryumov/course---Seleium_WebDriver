@@ -14,22 +14,39 @@ import org.openqa.selenium.ie.InternetExplorerOptions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import org.openqa.selenium.support.Color;
+
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class TestBase {
     public static WebDriver driver;
     public Properties prop;
     public static WebDriverWait wait;
     public Random rdm = new Random();
+    public static int seconds = 10;
 
-    boolean areElementsPresent(WebDriver driver, By locator) {
-        return driver.findElements(locator).size() > 0;
+    boolean isElementsPresent(WebDriver driver, By locator) {
+        try {
+            driver.manage().timeouts().implicitlyWait(seconds, TimeUnit.SECONDS);
+            return driver.findElements(locator).size() > 0;
+        } finally {
+            driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
+        }
+    }
+
+    boolean isNotElementsPresent(WebDriver driver, By locator) {
+        try {
+            driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
+            return driver.findElements(locator).size() == 0;
+        } finally {
+            driver.manage().timeouts().implicitlyWait(seconds, TimeUnit.SECONDS);
+        }
     }
 
     public void checkbox(WebDriver driver, By locator, int number) {
         List<WebElement> list = driver.findElements(locator);
-        for (WebElement chec: list) {
+        for (WebElement chec : list) {
             if (chec.isSelected() == true) {
                 chec.click();
             }
