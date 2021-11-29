@@ -45,11 +45,10 @@ public class CartTest extends TestBase {
         driver.findElement(By.cssSelector("div#cart a.link")).click();
         List<WebElement> button = driver.findElements(By.cssSelector("div#box-checkout-cart [name=remove_cart_item]"));
         for (int i = 0; i < button.size(); i++) {
-            List<WebElement> listBefore = driver.findElements(By.cssSelector("div#checkout-summary-wrapper tr"));
+            WebElement element = driver.findElement(By.cssSelector("div#checkout-summary-wrapper tr"));
             wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("div#box-checkout-cart [name=remove_cart_item]"))).click();
-            wait.until(ExpectedConditions.stalenessOf(driver.findElement(By.cssSelector("div#checkout-summary-wrapper tr"))));
-            List<WebElement> listAfter = driver.findElements(By.cssSelector("div#checkout-summary-wrapper tr"));
-            Assert.assertTrue(listAfter.size() < listBefore.size());
+            wait.until(ExpectedConditions.stalenessOf(element));
+
         }
         Assert.assertTrue(isElementsPresent(driver, By.cssSelector("div#checkout-cart-wrapper a")));
     }
