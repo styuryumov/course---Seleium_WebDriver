@@ -5,7 +5,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
@@ -16,7 +15,6 @@ import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.io.File;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Collections;
@@ -43,7 +41,7 @@ public class AdminTest extends TestBase {
             list.get(i).click();
             wait.until(presenceOfElementLocated(By.cssSelector("h1")));
 
-            if (areElementsPresent(driver, By.cssSelector("ul.docs [id*=doc-]"))) {
+            if (isElementsPresent(driver, By.cssSelector("ul.docs [id*=doc-]"))) {
                 List<WebElement> nestedElements = driver.findElements(By.cssSelector("ul.docs [id*=doc-]"));
 
                 for (int j = 0; j < nestedElements.size(); j++) {
@@ -184,8 +182,8 @@ public class AdminTest extends TestBase {
         Thread.sleep(1500);
         driver.findElement(By.cssSelector("td#content [name=query]")).sendKeys("Bat-Duck" + Keys.ENTER);
         list.clear();
-        list = driver.findElements(By.cssSelector("table.dataTable a"));
         wait.until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector("table.dataTable a"), "Bat-Duck"));
+        list = driver.findElements(By.cssSelector("table.dataTable a"));
         Assert.assertEquals("Bat-Duck", list.get(0).getText());
     }
 }
