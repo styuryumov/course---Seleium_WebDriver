@@ -185,8 +185,8 @@ public class AdminTest extends TestBase {
         // verification of successful product addition
         Thread.sleep(1500);
         driver.findElement(By.cssSelector("td#content [name=query]")).sendKeys("Bat-Duck" + Keys.ENTER);
-        list.clear();
         wait.until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector("table.dataTable a"), "Bat-Duck"));
+        list.clear();
         list = driver.findElements(By.cssSelector("table.dataTable a"));
         Assert.assertEquals("Bat-Duck", list.get(0).getText());
     }
