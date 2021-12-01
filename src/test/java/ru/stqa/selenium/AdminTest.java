@@ -139,6 +139,8 @@ public class AdminTest extends TestBase {
         addNew.get(1).click();
         List<WebElement> tabs = driver.findElements(By.cssSelector("div.tabs li a"));
         // Filling out the sheet general
+        wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.cssSelector("div#tab-general [name*=name]"))));
+        wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("div#tab-general [name*=name]")));
         List<WebElement> listGeneral = driver.findElements(By.cssSelector("div#tab-general [name]"));
         listGeneral.get(0).click();
         listGeneral.get(2).sendKeys("Bat-Duck");
@@ -151,13 +153,22 @@ public class AdminTest extends TestBase {
         selectSoldOutStatus.selectByValue("2");
         File file = new File("src\\test\\resources\\Duck.jpg");
         driver.findElement(By.cssSelector("div#tab-general [type=file]")).sendKeys(file.getAbsolutePath());
-        driver.findElement(By.cssSelector("div#tab-general [name=date_valid_from]")).click();
-        driver.findElement(By.cssSelector("div#tab-general [name=date_valid_from]")).sendKeys("26.11.2021");
-        driver.findElement(By.cssSelector("div#tab-general [name=date_valid_to]")).click();
-        driver.findElement(By.cssSelector("div#tab-general [name=date_valid_to]")).sendKeys("26.01.2022");
+        if("ie".equals(prop.getProperty("browser"))) {
+            driver.findElement(By.cssSelector("div#tab-general [name=date_valid_from]")).click();
+            driver.findElement(By.cssSelector("div#tab-general [name=date_valid_from]")).sendKeys("2021-11-26");
+            driver.findElement(By.cssSelector("div#tab-general [name=date_valid_to]")).click();
+            driver.findElement(By.cssSelector("div#tab-general [name=date_valid_to]")).sendKeys("2022-01-26");
+        }
+        else {
+            driver.findElement(By.cssSelector("div#tab-general [name=date_valid_from]")).click();
+            driver.findElement(By.cssSelector("div#tab-general [name=date_valid_from]")).sendKeys("26.11.2021");
+            driver.findElement(By.cssSelector("div#tab-general [name=date_valid_to]")).click();
+            driver.findElement(By.cssSelector("div#tab-general [name=date_valid_to]")).sendKeys("26.01.2022");
+        }
         // switch to tab Information
         tabs.get(1).click();
-        Thread.sleep(1500);
+        wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.cssSelector("div#tab-information [name=manufacturer_id]"))));
+        wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("div#tab-information [name=manufacturer_id]")));
         Select selectManufacturer = new Select(driver.findElement(By.cssSelector("div#tab-information [name=manufacturer_id]")));
         selectManufacturer.selectByValue("1");
         String shotDescription = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse sollicitudin ante massa, eget ornare libero porta congue.";
@@ -175,15 +186,17 @@ public class AdminTest extends TestBase {
         driver.findElement(By.cssSelector("div.trumbowyg-editor")).sendKeys(Keys.CONTROL + "v");
         //// switch to tab Prices
         tabs.get(3).click();
-        Thread.sleep(1500);
+        wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.cssSelector("div#tab-prices [name=purchase_price]"))));
+        wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("div#tab-prices [name=purchase_price]")));
         driver.findElement(By.cssSelector("div#tab-prices [name=purchase_price]")).clear();
         driver.findElement(By.cssSelector("div#tab-prices [name=purchase_price]")).sendKeys("10");
         List<WebElement> listCurrencySheet = driver.findElements(By.cssSelector("div#tab-prices [name*=gross_prices]"));
         listCurrencySheet.get(0).clear();
-        listCurrencySheet.get(0).sendKeys("25,00");
+        listCurrencySheet.get(0).sendKeys("25");
         driver.findElement(By.cssSelector("span.button-set [name=save]")).click();
         // verification of successful product addition
-        Thread.sleep(1500);
+        wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.cssSelector("td#content [name=query]"))));
+        wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("td#content [name=query]")));
         driver.findElement(By.cssSelector("td#content [name=query]")).sendKeys("Bat-Duck" + Keys.ENTER);
         wait.until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector("table.dataTable a"), "Bat-Duck"));
         list.clear();
