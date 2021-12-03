@@ -8,6 +8,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.logging.LogEntries;
+import org.openqa.selenium.logging.LogEntry;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
@@ -231,6 +233,25 @@ public class AdminTest extends TestBase {
         }
         driver.findElement(By.cssSelector("span.button-set [name=cancel]")).click();
         Assert.assertEquals("Countries", driver.findElement(By.cssSelector("td#content h1")).getText());
+    }
+
+    @Test
+    public void checkingProductLogs() {
+        List<WebElement> list = driver.findElements(By.cssSelector("li#app-"));
+        list.get(1).click();
+        Assert.assertEquals("Catalog", driver.findElement(By.cssSelector("td#content h1")).getText());
+        // Go to the directory with ducks
+        List<WebElement> rubberDucks = driver.findElements(By.cssSelector("table.dataTable a"));
+        rubberDucks.get(1).click();
+        List<WebElement> listProducts = driver.findElements(By.cssSelector("table.dataTable a[title=Edit]"));
+        int iterations = listProducts.size();
+        // Running through the list of products
+        for (int i = 2; i < iterations; i++) {
+            listProducts.get(i).click();
+            driver.manage().logs().get("browser").getAll().forEach(l -> System.out.println(l));
+            driver.navigate().back();
+            listProducts = driver.findElements(By.cssSelector("table.dataTable a[title=Edit]"));
+        }
     }
 }
 
