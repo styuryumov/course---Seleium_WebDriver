@@ -1,14 +1,18 @@
 package ru.stqa.selenium.pages;
 
+
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+
 import ru.stqa.selenium.app.Application;
+
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Properties;
+
 
 public class HomePage extends Page {
     Properties prop;
@@ -25,4 +29,5 @@ public class HomePage extends Page {
 
     @FindBy(css = "div#box-most-popular li.product")
     public List<WebElement> addProductSelection;
+
 }

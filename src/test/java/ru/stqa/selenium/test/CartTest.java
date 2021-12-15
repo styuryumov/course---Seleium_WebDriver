@@ -13,7 +13,7 @@ import java.io.IOException;
 
 @RunWith(DataProviderRunner.class)
 
-public class CartTest extends TestBase {
+public class  CartTest extends TestBase {
 
 
     @Test
