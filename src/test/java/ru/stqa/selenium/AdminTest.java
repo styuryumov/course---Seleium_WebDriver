@@ -8,8 +8,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.logging.LogEntries;
-import org.openqa.selenium.logging.LogEntry;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
@@ -26,9 +24,10 @@ import java.util.Collections;
 import java.util.Set;
 
 public class AdminTest extends TestBase {
+    ProjectTools tools = new ProjectTools();
 
     @Before
-    public void enterTheLink() {
+    public void authorizationInTheAdminPanel() {
         driver.get(prop.getProperty("baseUrl") + "/admin");
         driver.findElement(By.name("username")).sendKeys(prop.getProperty("login"));
         driver.findElement(By.name("password")).sendKeys(prop.getProperty("password"));
@@ -38,16 +37,16 @@ public class AdminTest extends TestBase {
 
 
     @Test
-    public void testAdminPanel() {
-        List<WebElement> list = driver.findElements(By.cssSelector("li#app-"));
-        int iterations = list.size();
+    public void adminPanelTest() {
+        List<WebElement> menuItems = driver.findElements(By.cssSelector("li#app-"));
+        int iterations = menuItems.size();
 
         for (int i = 0; i < iterations; i++) {
-            list = driver.findElements(By.cssSelector("li#app-"));
-            list.get(i).click();
+            menuItems = driver.findElements(By.cssSelector("li#app-"));
+            menuItems.get(i).click();
             wait.until(presenceOfElementLocated(By.cssSelector("h1")));
 
-            if (isElementsPresent(driver, By.cssSelector("ul.docs [id*=doc-]"))) {
+            if (tools.isElementsPresent(driver, By.cssSelector("ul.docs [id*=doc-]"))) {
                 List<WebElement> nestedElements = driver.findElements(By.cssSelector("ul.docs [id*=doc-]"));
 
                 for (int j = 0; j < nestedElements.size(); j++) {
@@ -61,8 +60,9 @@ public class AdminTest extends TestBase {
 
     @Test
     public void testSortCountries() {
-        List<WebElement> list = driver.findElements(By.cssSelector("li#app-"));
-        list.get(2).click();
+        List<WebElement> menuItems = driver.findElements(By.cssSelector("li#app-"));
+        menuItems.get(2).click();
+        wait.until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector("td#content h1"), "Countries"));
 
         List<String> sCountries = new ArrayList<>();
         WebElement tableCountries = driver.findElement(By.cssSelector("table.dataTable"));
@@ -70,6 +70,7 @@ public class AdminTest extends TestBase {
         for (int i = 1; i < allRowsCountries.size() - 1; i++) {
             List<WebElement> cellsCountries = allRowsCountries.get(i).findElements(By.cssSelector("td"));
             sCountries.add(cellsCountries.get(4).getAttribute("textContent"));
+            wait.until(driver -> driver.findElements(By.cssSelector("td#content h1")).size() > 0);
         }
         List<String> sortCountries = new ArrayList<>();
         sortCountries.addAll(sCountries);
@@ -85,6 +86,7 @@ public class AdminTest extends TestBase {
             int zone = Integer.parseInt(cellsZones.get(5).getAttribute("textContent"));
             if (zone > 0) {
                 cellsZones.get(4).findElement(By.tagName("a")).click();
+                wait.until(driver -> driver.findElements(By.cssSelector("td#content h1")).size() > 0);
                 WebElement tableZones = driver.findElement(By.cssSelector("table#table-zones"));
                 List<WebElement> allRowsZones = tableZones.findElements(By.cssSelector("tr"));
                 for (int j = 1; j < allRowsZones.size() - 1; j++) {
@@ -95,6 +97,7 @@ public class AdminTest extends TestBase {
                 sortCountriesZones.addAll(countryZones);
                 Assert.assertEquals(sortCountriesZones, countryZones);
                 driver.navigate().back();
+                wait.until(driver -> driver.findElements(By.cssSelector("td#content h1")).size() > 0);
                 tableCountriesZones = driver.findElement(By.cssSelector("table.dataTable"));
                 allRowsCountriesZones = tableCountriesZones.findElements(By.cssSelector("tr"));
             }
@@ -103,17 +106,18 @@ public class AdminTest extends TestBase {
 
     @Test
     public void testSortGeoZones() {
-        List<WebElement> list = driver.findElements(By.cssSelector("li#app-"));
-        list.get(5).click();
+        List<WebElement> menuItems = driver.findElements(By.cssSelector("li#app-"));
+        menuItems.get(5).click();
+        wait.until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector("td#content h1"), "Geo Zones"));
 
         List<String> zones = new ArrayList<>();
         List<String> sortZones = new ArrayList<>();
         List<WebElement> allRowsZones = driver.findElements(By.cssSelector("table.dataTable tr"));
         int iterations = allRowsZones.size();
         for (int i = 1; i < iterations - 1; i++) {
-            allRowsZones = driver.findElements(By.cssSelector("table.dataTable tr"));
             List<WebElement> cellsZones = allRowsZones.get(i).findElements(By.cssSelector("td"));
             cellsZones.get(2).findElement(By.tagName("a")).click();
+            wait.until(driver -> driver.findElements(By.cssSelector("td#content h1")).size() > 0);
             List<WebElement> rowsGeoZones = driver.findElements(By.cssSelector("table#table-zones tr"));
             int iterationsRow = rowsGeoZones.size();
             zones.clear();
@@ -128,17 +132,20 @@ public class AdminTest extends TestBase {
             Collections.sort(sortZones);
             Assert.assertEquals(sortZones, zones);
             driver.navigate().back();
+            allRowsZones = driver.findElements(By.cssSelector("table.dataTable tr"));
+            wait.until(driver -> driver.findElements(By.cssSelector("td#content h1")).size() > 0);
         }
     }
 
     @Test
-    public void creationNewProduct() throws InterruptedException {
-        List<WebElement> list = driver.findElements(By.cssSelector("li#app-"));
-        list.get(1).click();
-        Assert.assertEquals("Catalog", driver.findElement(By.cssSelector("td#content h1")).getText());
-        List<WebElement> tableBefore = driver.findElements(By.cssSelector("table.dataTable tr.row"));
+    public void creationNewProduct() {
+        List<WebElement> menuItems = driver.findElements(By.cssSelector("li#app-"));
+        menuItems.get(1).click();
+        wait.until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector("td#content h1"), "Catalog"));
+
         List<WebElement> addNew = driver.findElements(By.cssSelector("td#content a.button"));
         addNew.get(1).click();
+        wait.until(driver -> driver.findElements(By.cssSelector("td#content h1")).size() > 0);
         List<WebElement> tabs = driver.findElements(By.cssSelector("div.tabs li a"));
         // Filling out the sheet general
         wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.cssSelector("div#tab-general [name*=name]"))));
@@ -147,21 +154,20 @@ public class AdminTest extends TestBase {
         listGeneral.get(0).click();
         listGeneral.get(2).sendKeys("Bat-Duck");
         driver.findElement(By.cssSelector("div#tab-general [name=code]")).sendKeys("rd006");
-        checkbox(driver, By.cssSelector("div.input-wrapper [name*=categories]"), 1);
-        checkbox(driver, By.cssSelector("div.input-wrapper [name*=product_groups]"), 2);
+        tools.checkbox(driver, By.cssSelector("div.input-wrapper [name*=categories]"), 1);
+        tools.checkbox(driver, By.cssSelector("div.input-wrapper [name*=product_groups]"), 2);
         driver.findElement(By.cssSelector("div#tab-general [name=quantity]")).clear();
         driver.findElement(By.cssSelector("div#tab-general [name=quantity]")).sendKeys("30");
         Select selectSoldOutStatus = new Select(driver.findElement(By.cssSelector("div#tab-general [name=sold_out_status_id]")));
         selectSoldOutStatus.selectByValue("2");
         File file = new File("src\\test\\resources\\Duck.jpg");
         driver.findElement(By.cssSelector("div#tab-general [type=file]")).sendKeys(file.getAbsolutePath());
-        if("ie".equals(prop.getProperty("browser"))) {
+        if ("ie".equals(prop.getProperty("browser"))) {
             driver.findElement(By.cssSelector("div#tab-general [name=date_valid_from]")).click();
             driver.findElement(By.cssSelector("div#tab-general [name=date_valid_from]")).sendKeys("2021-11-26");
             driver.findElement(By.cssSelector("div#tab-general [name=date_valid_to]")).click();
             driver.findElement(By.cssSelector("div#tab-general [name=date_valid_to]")).sendKeys("2022-01-26");
-        }
-        else {
+        } else {
             driver.findElement(By.cssSelector("div#tab-general [name=date_valid_from]")).click();
             driver.findElement(By.cssSelector("div#tab-general [name=date_valid_from]")).sendKeys("26.11.2021");
             driver.findElement(By.cssSelector("div#tab-general [name=date_valid_to]")).click();
@@ -201,16 +207,19 @@ public class AdminTest extends TestBase {
         wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("td#content [name=query]")));
         driver.findElement(By.cssSelector("td#content [name=query]")).sendKeys("Bat-Duck" + Keys.ENTER);
         wait.until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector("table.dataTable a"), "Bat-Duck"));
-        list.clear();
+        List<WebElement> list = new ArrayList<>();
         list = driver.findElements(By.cssSelector("table.dataTable a"));
         Assert.assertEquals("Bat-Duck", list.get(0).getText());
     }
 
     @Test
     public void testExternalLinkByCountries() {
-        List<WebElement> list = driver.findElements(By.cssSelector("li#app-"));
-        list.get(2).click();
+        List<WebElement> menuItems = driver.findElements(By.cssSelector("li#app-"));
+        menuItems.get(2).click();
+        wait.until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector("td#content h1"), "Countries"));
+
         driver.findElement(By.cssSelector("td#content a.button")).click();
+        wait.until(driver -> driver.findElements(By.cssSelector("td#content h1")).size() > 0);
         String activeWindow = driver.getWindowHandle();
         Set<String> oldWindows = driver.getWindowHandles();
         List<WebElement> externalLinks = driver.findElements(By.cssSelector("td#content i.fa.fa-external-link"));
@@ -236,10 +245,10 @@ public class AdminTest extends TestBase {
     }
 
     @Test
-    public void checkingProductLogs() {
-        List<WebElement> list = driver.findElements(By.cssSelector("li#app-"));
-        list.get(1).click();
-        Assert.assertEquals("Catalog", driver.findElement(By.cssSelector("td#content h1")).getText());
+    public void testForNoMessagesInTheLog() {
+        List<WebElement> menuItems = driver.findElements(By.cssSelector("li#app-"));
+        menuItems.get(1).click();
+        wait.until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector("td#content h1"), "Catalog"));
         // Go to the directory with ducks
         List<WebElement> rubberDucks = driver.findElements(By.cssSelector("table.dataTable a"));
         rubberDucks.get(1).click();
